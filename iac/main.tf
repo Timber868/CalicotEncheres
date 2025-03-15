@@ -163,3 +163,4 @@ resource "azurerm_monitor_autoscale_setting" "autoscale" {
       default = 1
     }
 }
+}
