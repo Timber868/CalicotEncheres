@@ -4,6 +4,10 @@ on:
   workflow_dispatch: {}   # This means you can run it manually in GitHub
   # You could also do on: push if you want to deploy on every push to a specific branch
 
+permissions:
+  id-token: write
+  contents: read
+  
 jobs:
   deploy_infra:
     runs-on: ubuntu-latest
