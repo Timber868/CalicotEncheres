@@ -73,18 +73,18 @@ resource "azurerm_subnet" "subnet_db" {
 
 # App Service Plan
 resource "azurerm_service_plan" "app_plan" {
-  name                = "plan-calicot-dev-21"
+  name                = "plan-calicot-web-dev-21"
   location            = "canadacentral"
-  resource_group_name = "rg-calicot-dev-21"
+  resource_group_name = "rg-calicot-web-dev-21"
   os_type             = "Linux"
   sku_name            = "S1"
 }
 
 # Linux Web App 
 resource "azurerm_linux_web_app" "web_app" {
-  name                = "app-calicot-dev-21"
+  name                = "app-calicot-web-dev-21"
   location            = "canadacentral"
-  resource_group_name = "rg-calicot-dev-21"
+  resource_group_name = "rg-calicot-web-dev-21"
   service_plan_id     = azurerm_service_plan.app_plan.id
 
   site_config {
@@ -106,8 +106,8 @@ resource "azurerm_linux_web_app" "web_app" {
 }
 
 resource "azurerm_monitor_autoscale_setting" "autoscale" {
-  name                = "autoscale-app-calicot-dev-21"
-  resource_group_name = "rg-calicot-dev-21"
+  name                = "autoscale-app-calicot-web-dev-21"
+  resource_group_name = "rg-calicot-web-dev-21"
   location            = "canadacentral"
   target_resource_id  = azurerm_service_plan.app_plan.id
 
