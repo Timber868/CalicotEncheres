@@ -16,7 +16,7 @@ provider "azurerm" {
 
 variable "resource_group_name" {
   type    = string
-  default = "rg-calicot-dev-21"
+  default = "rg-calicot-web-dev-21"
 }
 
 variable "region" {
