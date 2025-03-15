@@ -5,7 +5,8 @@ on:
     # or on: push
 
 permissions:
-  contents: read   # No 'id-token: write'
+  contents: read
+  id-token: write
 
 jobs:
   deploy_infra:
