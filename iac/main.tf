@@ -105,50 +105,56 @@ resource "azurerm_linux_web_app" "web_app" {
   }
 }
 
-# Auto-scaling 
 resource "azurerm_monitor_autoscale_setting" "autoscale" {
   name                = "autoscale-app-calicot-dev-21"
-  location            = "canadacentral"
   resource_group_name = "rg-calicot-dev-21"
+  location            = "canadacentral"
   target_resource_id  = azurerm_service_plan.app_plan.id
 
   profile {
-    name = "default"
+    name = "default-autoscale"
 
+    # ONLY ONE capacity block per profile (defines min/max instances)
     capacity {
-      minimum = 1
-      maximum = 2
-      default = 1
+      minimum = "1"
+      maximum = "2"
+      default = "1"
     }
 
+    # Rule: Scale Out (CPU above 70%)
     rule {
       metric_trigger {
         metric_name        = "CpuPercentage"
         metric_resource_id = azurerm_service_plan.app_plan.id
-        operator           = "GreaterThan"
-        threshold          = 70
         time_grain         = "PT1M"
         statistic          = "Average"
         time_window        = "PT5M"
+        operator          = "GreaterThan"
+        threshold         = 70
+        time_aggregation  = "Average"
       }
+
       scale_action {
         direction = "Increase"
         type      = "ChangeCount"
-        value     = 1
+        value     = "1"
         cooldown  = "PT1M"
       }
     }
 
+    # Rule to decrease instances
     rule {
       metric_trigger {
         metric_name        = "CpuPercentage"
         metric_resource_id = azurerm_service_plan.app_plan.id
-        operator           = "LessThan"
-        threshold          = 40
         time_grain         = "PT1M"
         statistic          = "Average"
         time_window        = "PT5M"
+        operator           = "LessThan"
+        threshold           = 40
+        time_aggregation    = "Average"
       }
+
       scale_action {
         direction = "Decrease"
         type      = "ChangeCount"
@@ -156,11 +162,5 @@ resource "azurerm_monitor_autoscale_setting" "autoscale" {
         cooldown  = "PT1M"
       }
     }
-
-    capacity {
-      minimum = 1
-      maximum = 2
-      default = 1
-    }
-}
+  }
 }
