@@ -1,0 +1,36 @@
+name: Deploy Infrastructure
+
+on:
+  workflow_dispatch: {}   # This means you can run it manually in GitHub
+  # You could also do on: push if you want to deploy on every push to a specific branch
+
+jobs:
+  deploy_infra:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out the code
+        uses: actions/checkout@v3
+
+      - name: Set up Terraform
+        uses: hashicorp/setup-terraform@v2
+
+      - name: Azure Login
+        uses: azure/login@v1
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+          client-secret: ${{ secrets.AZURE_CLIENT_SECRET }}
+
+      - name: Terraform Init
+        run: terraform -chdir=iac init
+
+      - name: Terraform Plan
+        run: terraform -chdir=iac plan -out=tfplan
+
+      - name: Terraform Apply
+        # WARNING: In a real production environment, you might want to
+        # manually review the plan before applying. This challenge might
+        # allow direct apply in the same workflow, so let's do that:
+        run: terraform -chdir=iac apply -auto-approve tfplan
